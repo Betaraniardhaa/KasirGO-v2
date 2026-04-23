@@ -1413,3 +1413,17 @@ body {
   }
   @page { margin: 0; size: 80mm auto; }
 }
+
+/* ─── Transaksi: responsive 2-kolom layout ─── */
+@media (max-width: 991.98px) {
+  #page-transaksi > div[style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  #page-transaksi .cart-panel {
+    height: auto;
+    min-height: auto;
+    max-height: none;
+    position: static;
+  }
+  #page-transaksi .cart-items { max-height: 200px; }
+}
