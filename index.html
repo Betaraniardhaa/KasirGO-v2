@@ -322,71 +322,113 @@
             <p class="page-subtitle" id="txDate"></p>
           </div>
           <div style="display:flex;align-items:center;gap:8px">
-            <span class="badge-custom blue">No. <strong id="invNum">0001</strong></span>
+            <span class="invoice-badge">No. <strong id="invNum">0001</strong></span>
           </div>
         </div>
-        <div class="tx-layout">
-          <!-- Produk Grid -->
-          <div class="tx-left">
-            <div class="tx-search-bar">
+        <!-- Layout: produk kiri, cart kanan — berdampingan -->
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start">
+          <!-- ── Kolom Kiri: Produk Grid ── -->
+          <div>
+            <!-- Search & Filter Bar -->
+            <div style="display:flex;gap:8px;margin-bottom:12px">
               <div class="input-icon-wrap" style="flex:1">
                 <i class="fa-solid fa-search"></i>
-                <input type="text" class="form-control form-control-custom" id="searchProduk" placeholder="Cari produk / barcode..." oninput="renderProdukGrid()" />
+                <input type="text" class="form-control form-control-custom" id="searchProduk"
+                  placeholder="Cari produk / barcode..." oninput="renderProdukGrid()" />
               </div>
-              <select class="form-select form-select-custom" id="filterKategoriTx" style="width:160px" onchange="renderProdukGrid()">
+              <select class="form-select form-select-custom" id="filterKategoriTx"
+                style="width:160px;flex-shrink:0" onchange="renderProdukGrid()">
                 <option value="">Semua Kategori</option>
               </select>
             </div>
             <div class="produk-grid" id="produkGrid"></div>
           </div>
-          <!-- Cart -->
-          <div class="tx-right">
+
+          <!-- ── Kolom Kanan: Cart Panel ── -->
+          <div class="cart-panel">
+            <!-- Header Cart -->
             <div class="cart-header">
-              <h6 class="cart-title"><i class="fa-solid fa-cart-shopping me-2"></i>Keranjang <span class="badge-custom blue ms-1" id="cartCount">0</span></h6>
-              <button class="btn-clear-cart" onclick="clearCart()" title="Kosongkan"><i class="fa-solid fa-trash"></i></button>
+              <i class="fa-solid fa-cart-shopping me-2"></i>Keranjang
+              <span class="cart-count" id="cartCount">0</span>
+              <button onclick="clearCart()" title="Kosongkan"
+                style="margin-left:8px;background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px">
+                <i class="fa-solid fa-trash"></i>
+              </button>
             </div>
+
+            <!-- Item List -->
             <div class="cart-items" id="cartItems">
-              <div class="empty-cart"><i class="fa-solid fa-cart-shopping"></i><p>Keranjang kosong</p></div>
+              <div class="empty-cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <p>Keranjang kosong</p>
+              </div>
             </div>
-            <div class="cart-summary">
+
+            <!-- Summary & Payment -->
+            <div class="cart-footer">
               <div class="cart-summary-row"><span>Subtotal</span><span id="cartSubtotal">Rp 0</span></div>
-              <div class="cart-summary-row" id="ppnRow"><span>PPN (<span id="ppnPctLabel">11</span>%)</span><span id="cartPpn">Rp 0</span></div>
-              <div class="cart-disc">
-                <label style="font-size:12px;color:var(--text-muted)">Diskon (%)</label>
-                <input type="number" class="form-control form-control-custom" id="discountInput" value="0" min="0" max="100" style="width:80px;text-align:center" oninput="calcTotal()" />
+              <div class="cart-summary-row" id="ppnRow">
+                <span>PPN (<span id="ppnPctLabel">11</span>%)</span>
+                <span id="cartPpn">Rp 0</span>
+              </div>
+              <div class="cart-summary-row">
+                <span>Diskon (%)</span>
+                <input type="number" id="discountInput" value="0" min="0" max="100"
+                  style="width:60px;text-align:center;border:1.5px solid var(--border);border-radius:6px;padding:3px 6px;font-size:12px;font-family:inherit"
+                  oninput="calcTotal()" />
               </div>
               <div class="cart-total-row"><span>TOTAL</span><span id="cartTotal">Rp 0</span></div>
-            </div>
-            <!-- Metode Bayar -->
-            <div class="pay-methods">
-              <button class="pay-btn active" onclick="setPayMethod('tunai',this)"><i class="fa-solid fa-money-bill-wave me-1"></i>Tunai</button>
-              <button class="pay-btn" onclick="setPayMethod('qris',this)"><i class="fa-solid fa-qrcode me-1"></i>QRIS</button>
-              <button class="pay-btn" onclick="setPayMethod('debit',this)"><i class="fa-solid fa-credit-card me-1"></i>Debit</button>
-            </div>
-            <div id="tunaiSection">
-              <div class="cart-disc" style="margin-top:8px">
-                <label style="font-size:12px;color:var(--text-muted)">Jumlah Bayar (Rp)</label>
-                <input type="number" class="form-control form-control-custom" id="payAmount" placeholder="0" oninput="calcChange()" style="width:140px;text-align:right" />
+
+              <!-- Metode Bayar -->
+              <div class="pay-methods">
+                <button class="pay-btn active" onclick="setPayMethod('tunai',this)">
+                  <i class="fa-solid fa-money-bill-wave"></i>Tunai
+                </button>
+                <button class="pay-btn" onclick="setPayMethod('qris',this)">
+                  <i class="fa-solid fa-qrcode"></i>QRIS
+                </button>
+                <button class="pay-btn" onclick="setPayMethod('debit',this)">
+                  <i class="fa-solid fa-credit-card"></i>Debit
+                </button>
               </div>
-              <div class="cart-summary-row mt-1"><span style="color:var(--green);font-weight:600">Kembalian</span><span id="changeAmount" style="font-weight:700;color:var(--green)">Rp 0</span></div>
-            </div>
-            <div id="qrisSection" style="display:none">
-              <div style="text-align:center;padding:12px;background:var(--bg-soft);border-radius:12px;margin-top:8px">
-                <i class="fa-solid fa-qrcode" style="font-size:40px;color:var(--primary);margin-bottom:8px;display:block"></i>
-                <div style="font-size:12px;color:var(--text-muted)">Total QRIS</div>
-                <div style="font-size:20px;font-weight:800;color:var(--primary)" id="qrisAmount">Rp 0</div>
+
+              <!-- Tunai Section -->
+              <div id="tunaiSection">
+                <div class="cart-summary-row">
+                  <span>Jumlah Bayar</span>
+                  <input type="number" id="payAmount" placeholder="0"
+                    style="width:110px;text-align:right;border:1.5px solid var(--border);border-radius:6px;padding:4px 8px;font-size:12px;font-family:inherit"
+                    oninput="calcChange()" />
+                </div>
+                <div class="cart-summary-row" style="color:var(--green);font-weight:700">
+                  <span>Kembalian</span>
+                  <span id="changeAmount">Rp 0</span>
+                </div>
               </div>
-            </div>
-            <div id="debitSection" style="display:none">
-              <div style="text-align:center;padding:12px;background:var(--bg-soft);border-radius:12px;margin-top:8px">
-                <i class="fa-solid fa-credit-card" style="font-size:36px;color:var(--purple);margin-bottom:8px;display:block"></i>
-                <div style="font-size:12px;color:var(--text-muted)">Total Debit</div>
-                <div style="font-size:20px;font-weight:800;color:var(--purple)" id="debitAmount">Rp 0</div>
+
+              <!-- QRIS Section -->
+              <div id="qrisSection" style="display:none">
+                <div class="qris-box">
+                  <div class="qris-label">Total Tagihan</div>
+                  <div class="qris-img"><i class="fa-solid fa-qrcode"></i></div>
+                  <div class="qris-amount" id="qrisAmount">Rp 0</div>
+                  <div class="qris-note">Scan QR lalu konfirmasi pembayaran</div>
+                </div>
               </div>
+
+              <!-- Debit Section -->
+              <div id="debitSection" style="display:none">
+                <div class="debit-box">
+                  <div class="debit-label">Total Tagihan</div>
+                  <div class="debit-amount" id="debitAmount">Rp 0</div>
+                  <div class="debit-note"><i class="fa-solid fa-credit-card me-1"></i>Masukkan kartu &amp; minta PIN</div>
+                </div>
+              </div>
+
+              <button class="btn-proses mt-2" onclick="prosesTransaksi()">
+                <i class="fa-solid fa-check-circle me-2"></i>Proses Transaksi
+              </button>
             </div>
-            <button class="btn btn-primary-custom w-100 mt-3" onclick="prosesTransaksi()" style="padding:14px;font-size:15px;font-weight:700">
-              <i class="fa-solid fa-check-circle me-2"></i>Proses Transaksi
-            </button>
           </div>
         </div>
       </div>
